@@ -33,7 +33,6 @@ export default function UserRoutes(app) {
     res.sendStatus(200);
   };
 
-
   const profile = (req, res) => {
     const currentUser = req.session["currentUser"];
     if (!currentUser) {
@@ -56,7 +55,7 @@ export default function UserRoutes(app) {
       res.status(401).json({ message: "Unable to login. Try again later." });
     }
   };
-const findCoursesForEnrolledUser = (req, res) => {
+  const findCoursesForEnrolledUser = (req, res) => {
     let { userId } = req.params;
     if (userId === "current") {
       const currentUser = req.session["currentUser"];
@@ -72,12 +71,27 @@ const findCoursesForEnrolledUser = (req, res) => {
   const createCourse = (req, res) => {
     const currentUser = req.session["currentUser"];
     const newCourse = courseDao.createCourse(req.body);
-    console.log(currentUser)
     enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id);
     res.json(newCourse);
   };
-  app.post("/api/users/current/courses", createCourse);
 
+  const enrollToCourse = (req, res) => {
+    let { courseId } = req.params;
+    const currentUser = req.session["currentUser"];
+    console.log(currentUser);
+    const newEnrollmentId = enrollmentsDao.enrollUserInCourse(currentUser._id, courseId);
+    res.json({enrollmentId: newEnrollmentId});
+  };
+  const unenrollToCourse = (req, res) => {
+    let { courseId } = req.params;
+    const currentUser = req.session["currentUser"];
+    enrollmentsDao.unenrollUserInCourse(currentUser._id, courseId);
+    res.json(currentUser);
+  };
+  
+  app.post("/api/users/current/courses", createCourse);
+  app.put("/api/users/:courseId/enroll", enrollToCourse);
+  app.delete("/api/users/:courseId/unenroll", unenrollToCourse);
   app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
   app.post("/api/users/signin", signin);
   app.post("/api/users", createUser);

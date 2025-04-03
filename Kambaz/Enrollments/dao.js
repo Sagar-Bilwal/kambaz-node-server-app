@@ -3,8 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 
 export function enrollUserInCourse(userId, courseId) {
   const { enrollments } = Database;
-  enrollments.push({ _id: uuidv4(), user: userId, course: courseId });
-  console.log("enrollUserInCourse: User ID = "+ userId)
+  const newEnrollmentId = uuidv4();
+  enrollments.push({ _id: newEnrollmentId, user: userId, course: courseId });
+  return newEnrollmentId;
+  // console.log("enrollUserInCourse: User ID = "+ userId)
+}
+
+export function unenrollUserInCourse(userId, courseId) {
+  const { enrollments } = Database;
+  Database.enrollments = enrollments.filter((enrollment) => (enrollment.user !== userId || enrollment.course !== courseId));
 }
 
 export function findAllEnrollments() {

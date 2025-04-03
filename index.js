@@ -11,6 +11,7 @@ import session from "express-session";
 import CourseRoutes from './Kambaz/Courses/routes.js';
 import "dotenv/config";
 import EnrollmentRoutes from './Kambaz/Enrollments/routes.js';
+import ModuleRoutes from './Kambaz/Modules/routes.js';
 
 const app = express();
 app.use(
@@ -42,6 +43,7 @@ app.use(express.json());
 UserRoutes(app);
 CourseRoutes(app);
 EnrollmentRoutes(app);
+ModuleRoutes(app);
 Hello(app);
 Lab5(app);
 PathParameters(app);
